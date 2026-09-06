@@ -32,6 +32,8 @@ void registerActorExtensions();
 
 PlayState* gPlay;
 
+bool hasBDSoTMod;
+
 RECOMP_CALLBACK("*", recomp_on_init)
 void init_rando()
 {
@@ -44,10 +46,11 @@ void init_rando()
     recomp_set_allow_no_ocarina_tf(true);
     recomp_set_h_and_d_no_sword_fix(true);
 
-    dsot_set_skip_dsot_cutscene(true);
+    if (recomp_is_dependency_met("mm_recomp_better_double_sot") == DEPENDENCY_STATUS_FOUND) {
+        dsot_set_skip_dsot_cutscene(true);
+        hasBDSoTMod = true;
+    }
     registerActorExtensions();
-
-    randoCreateNotificationContainer();
 }
 
 void randoScout() {
@@ -767,10 +770,9 @@ void update_rando(PlayState* play) {
                 char* player_name;
                 rando_get_item_name_from_id(item_id, &item_name);
                 rando_get_player_name(player, &player_name);
-                randoEmitRecieveNotification(item_name, player_name, randoConvertItemId(item_id), item_type);
+                randoCreateReceiveNotification(item_name, player_name, randoConvertItemId(item_id), item_type);
                 recomp_free(item_name);
                 recomp_free(player_name);
-                break; // TEMP: due to a crash when displaying too many ui elements, items are processed once per frame
             }
         }
 
@@ -789,7 +791,7 @@ void update_rando(PlayState* play) {
             // display what/who caused the last death
             char* cause;
             rando_get_death_link_cause(&cause);
-            randoEmitNormalNotification(cause);
+            randoCreateNormalNotification(cause);
         }
 
         // check for 100% condition to give majora soul (gigarando)
@@ -802,7 +804,7 @@ void update_rando(PlayState* play) {
     }
 
     // testing for time skips
-    if (recomp_get_config_u32("skip_time") && CHECK_BTN_ALL(CONTROLLER1(&play->state)->press.button, BTN_L)) {
+    if (hasBDSoTMod && recomp_get_config_u32("skip_time") && CHECK_BTN_ALL(CONTROLLER1(&play->state)->press.button, BTN_L)) {
         // dsot_set_time(play, day, CLOCK_TIME(hour, 0));
         dsot_set_time(play, recomp_get_config_u32("time_day"), CLOCK_TIME(recomp_get_config_u32("time_hour"), 0));
         // macros to maybe use later

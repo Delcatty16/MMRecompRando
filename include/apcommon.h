@@ -230,7 +230,7 @@ typedef enum {
 #define AP_PREFIX_FLOWERS 0x3F0000
 #define AP_PREFIX_SIGNS 0x310000
 #define AP_PREFIX_TORCHES 0x320000
-#define AP_PREFIX_ENEMY_DROP 0x1000000 /* uses 7 digits rather than 6 to prevent conflicts */
+#define AP_PREFIX_ENEMY_DROP 0xAA0000
 
 #define AP_ITEM_PREFIX_SOUL_MISC 0x0A0000
 #define AP_ITEM_PREFIX_SOUL_BOSS 0x0B0000
@@ -381,17 +381,30 @@ void randoShowAPConnectMenu();
 void randoCreateImportMenu();
 void randoShowImportMenu();
 void randoCreateModCheckMenu();
+bool randoGenerateMenuOpen();
 bool randoCheckRequiredMods();
 void randoStart(bool multiworld);
 
 void randoScout();
 
+typedef enum {
+    RANDO_NOTIFICATION_NORMAL,
+    RANDO_NOTIFICATION_ERROR,
+    RANDO_NOTIFICATION_RECEIVE,
+    RANDO_NOTIFICATION_SEND
+} RandoNotificationType;
+
 void notificationUpdateCycle();
 void randoCreateNotificationContainer();
-void randoEmitRecieveNotification(const char* item_name, const char* from_name, const ItemId item, RandoItemClassification item_class);
+void randoEmitReceiveNotification(const char* item_name, const char* from_name, const ItemId item, RandoItemClassification item_class);
+void randoCreateReceiveNotification(const char* item_name, const char* from_name, const ItemId item, RandoItemClassification item_class);
 void randoEmitSendNotification(const char* item_name, const char* to_name, const ItemId item, RandoItemClassification item_class);
+void randoCreateSendNotification(const char* item_name, const char* to_name, const ItemId item, RandoItemClassification item_class);
+void randoAddAPNotificationToQueue(RandoNotificationType notif_type, const char* item_name, const char* player_name, const ItemId item, RandoItemClassification item_class);
 void randoEmitNormalNotification(const char* notif_text);
+void randoCreateNormalNotification(const char* notif_text);
 void randoEmitErrorNotification(const char* error_text);
-bool randoGenerateMenuOpen();
+void randoCreateErrorNotification(const char* error_text);
+void randoAddNotificationToQueue(RandoNotificationType notif_type, const char* notif_text);
 
 #endif

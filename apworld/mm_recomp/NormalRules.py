@@ -141,11 +141,22 @@ def can_get_red_potion(state, player, prices, options):
 
 def can_get_blue_potion(state, player, prices, options):
     return (
-            has_bottle(state, player) and
+        has_bottle(state, player) and
+        (
+            # change this if the "mushroom item" moves to a different option
+            state.can_reach("Southern Swamp Witch Shop Mushroom Item", "Location", player) or
             (
-                state.can_reach("Southern Swamp Witch Shop Item 1", "Location", player) or
-                state.can_reach("Ikana Canyon Scrub Purchase", "Location", player)
+                state.can_reach("Lower Ikana Canyon", "Region", player) and
+                (
+                    options.scrubsanity.value and
+                    state.can_reach("Ikana Canyon Scrub Purchase", "Location", player)
+                ) or
+                (
+                    has_soul_npc(state, player, options, "Business Scrubs") and
+                    can_afford_price(state, player, options, 100)
+                )
             )
+        )
     )
 
 def can_plant_beans(state, player, options):
@@ -941,6 +952,7 @@ def get_location_rules(player, options, prices, boss_placements):
                 has_soul_absurd(state, player, options, "Grottos") and
                 has_soul_absurd(state, player, options, "Deku Flowers") and
                 has_soul_npc(state, player, options, "Deku Playground Employee") and
+                can_afford_price(state, player, options, 50) and
                 state.has("Deku Mask", player)
             ),
         "North Clock Town Deku Playground All Days":
@@ -948,6 +960,7 @@ def get_location_rules(player, options, prices, boss_placements):
                 has_soul_absurd(state, player, options, "Grottos") and
                 has_soul_absurd(state, player, options, "Deku Flowers") and
                 has_soul_npc(state, player, options, "Deku Playground Employee") and
+                can_afford_price(state, player, options, 50) and
                 state.has("Deku Mask", player)
             ),
         "North Clock Town Save Old Lady":
@@ -982,7 +995,17 @@ def get_location_rules(player, options, prices, boss_placements):
         "Tingle Clock Town Map Purchase":
             lambda state: (
                 has_soul_npc(state, player, options, "Tingle") and
-                has_projectiles(state, player)
+                has_projectiles(state, player) and
+                (
+                    (
+                        state.can_reach("Clock Town", 'Region', player) and
+                        can_afford_price(state, player, options, 5)
+                    ) or
+                    (
+                        state.can_reach("Upper Ikana Canyon", 'Region', player) and
+                        can_afford_price(state, player, options, 40)
+                    )
+                )
             ),
         
         "South Clock Town Clock Tower Freestanding HP":
@@ -1030,16 +1053,19 @@ def get_location_rules(player, options, prices, boss_placements):
         "East Clock Town Shooting Gallery 40-49 Points":
             lambda state: (
                 has_soul_npc(state, player, options, "Archery Man") and 
-                state.has("Progressive Bow", player)
+                state.has("Progressive Bow", player) and
+                can_afford_price(state, player, options, 20)
             ),
         "East Clock Town Shooting Gallery Perfect 50 Points":
             lambda state: (
                 has_soul_npc(state, player, options, "Archery Man") and 
-                state.has("Progressive Bow", player)
+                state.has("Progressive Bow", player) and
+                can_afford_price(state, player, options, 20)
             ),
         "East Clock Town Honey and Darling Any Day":
             lambda state: (
                 has_soul_npc(state, player, options, "Honey and Darling") and
+                can_afford_price(state, player, options, 10) and
                 (
                     state.has("Progressive Bow", player) or
                     state.has("Progressive Bomb Bag", player) or
@@ -1053,26 +1079,33 @@ def get_location_rules(player, options, prices, boss_placements):
         "East Clock Town Honey and Darling All Days":
             lambda state: (
                 has_soul_npc(state, player, options, "Honey and Darling") and
+                can_afford_price(state, player, options, 10) and
                 state.has("Progressive Bow", player) and 
                 state.has("Progressive Bomb Bag", player) and 
                 has_bombchus(state, player)
             ),
         "East Clock Town Treasure Game Chest (Human)":
-            lambda state: has_soul_npc(state, player, options, "Treasure Game Lady"),
+            lambda state: (
+                has_soul_npc(state, player, options, "Treasure Game Lady") and
+                can_afford_price(state, player, options, 20)
+            ),
         "East Clock Town Treasure Game Chest (Deku)":
             lambda state: (
                 has_soul_npc(state, player, options, "Treasure Game Lady") and
-                state.has("Deku Mask", player)
+                state.has("Deku Mask", player) and
+                can_afford_price(state, player, options, 10)
             ),
         "East Clock Town Treasure Game Chest (Goron)":
             lambda state: (
                 has_soul_npc(state, player, options, "Treasure Game Lady") and
-                state.has("Goron Mask", player)
+                state.has("Goron Mask", player) and
+                can_afford_price(state, player, options, 30)
             ),
         "East Clock Town Treasure Game Chest (Zora)":
             lambda state: (
                 has_soul_npc(state, player, options, "Treasure Game Lady") and
-                state.has("Zora Mask", player)
+                state.has("Zora Mask", player) and
+                can_afford_price(state, player, options, 5)
             ),
         "Bomber's Hideout Chest":
             lambda state: (
@@ -1119,11 +1152,15 @@ def get_location_rules(player, options, prices, boss_placements):
                 can_afford_price(state, player, options, 200)
             ),
         "West Clock Town Lottery Any Day":
-            lambda state: has_soul_npc(state, player, options, "Lottery"),       
+            lambda state: (
+                has_soul_npc(state, player, options, "Lottery") and
+                can_afford_price(state, player, options, 10)
+            ),
         "West Clock Town Swordsman Expert Course":
             lambda state: (
                 has_soul_npc(state, player, options, "Swordsman") and
-                state.has("Progressive Sword", player)
+                state.has("Progressive Sword", player) and
+                can_afford_price(state, player, options, 10)
             ),
         "West Clock Town Postman Counting":
             lambda state: (
@@ -1250,7 +1287,8 @@ def get_location_rules(player, options, prices, boss_placements):
         "Clock Town Bomb Shop Powder Keg Goron":
             lambda state: (
                 has_soul_npc(state, player, options, "Keg Selling Goron") and
-                state.has("Goron Mask", player) and state.has("Powder Keg", player)
+                state.has("Goron Mask", player) and state.has("Powder Keg", player) and
+                can_afford_price(state, player, options, 50)
             ),
         "Clock Town Bomb Shop Item 3 (Stop Thief)":
             lambda state: (
@@ -1475,14 +1513,23 @@ def get_location_rules(player, options, prices, boss_placements):
                 state.has("Epona's Song", player)
             ),
         "Milk Road Gorman Ranch Purchase":
-            lambda state: has_soul_npc(state, player, options, "Gorman Brothers"),
+            lambda state: (
+                has_soul_npc(state, player, options, "Gorman Brothers") and
+                can_afford_price(state, player, options, 50)
+            ),
         "Tingle Romani Ranch Map Purchase":
             lambda state: (
                 has_soul_npc(state, player, options, "Tingle") and
                 has_projectiles(state, player) and 
                 (
-                    state.can_reach("Milk Road", 'Region', player) or 
-                    state.can_reach("Twin Islands", 'Region', player)
+                    (
+                        state.can_reach("Milk Road", 'Region', player) and
+                        can_afford_price(state, player, options, 20)
+                    ) or
+                    (
+                        state.can_reach("Twin Islands", 'Region', player) and
+                        can_afford_price(state, player, options, 40)
+                    )
                 )
             ),
         
@@ -1497,25 +1544,34 @@ def get_location_rules(player, options, prices, boss_placements):
                 has_soul_npc(state, player, options, "Tingle") and
                 has_projectiles(state, player) and 
                 (
-                    state.can_reach("Southern Swamp", 'Region', player) or 
-                    state.can_reach("Clock Town", 'Region', player)
+                    (
+                        state.can_reach("Clock Town", 'Region', player) and
+                        can_afford_price(state, player, options, 40)
+                    ) or
+                    (
+                        state.can_reach("Southern Swamp", 'Region', player) and
+                        can_afford_price(state, player, options, 20)
+                    )
                 )
             ),
         "Swamp Shooting Gallery 2120 Points":
             lambda state: (
                 has_soul_npc(state, player, options, "Archery Man") and 
-                state.has("Progressive Bow", player)
+                state.has("Progressive Bow", player) and
+                can_afford_price(state, player, options, 20)
             ),
         "Swamp Shooting Gallery 2180 Points":
             lambda state: (
                 has_soul_npc(state, player, options, "Archery Man") and 
-                state.has("Progressive Bow", player)
+                state.has("Progressive Bow", player) and
+                can_afford_price(state, player, options, 20)
             ),
 
         "Southern Swamp Deku Scrub Purchase":
             lambda state: (
+                has_soul_npc(state, player, options, "Business Scrubs") and
+                can_afford_price(state, player, options, 10) and
                 (
-                    has_soul_npc(state, player, options, "Business Scrubs") and
                     state.has("Deku Mask", player) and 
                     can_plant_beans(state, player, options)
                 ) or 
@@ -1812,6 +1868,13 @@ def get_location_rules(player, options, prices, boss_placements):
                 has_soul_npc(state, player, options, "Bean Daddy") and
                 state.has("Deku Mask", player)
             ),
+        # "Deku Palace Bean Seller Purchase":
+        #     lambda state: (
+        #         has_soul_absurd(state, player, options, "Grottos") and
+        #         has_soul_npc(state, player, options, "Bean Daddy") and
+        #         state.has("Deku Mask", player) and
+        #         can_afford_price(state, player, options, 10)
+        #     ),
         "Deku Palace Bean Grotto Chest":
             lambda state: (
                 has_soul_absurd(state, player, options, "Grottos") and
@@ -2029,7 +2092,8 @@ def get_location_rules(player, options, prices, boss_placements):
                 can_clear_woodfall(state, player, boss_placements) and 
                 has_bottle(state, player) and 
                 state.has("Progressive Bow", player) and
-                has_soul_npc(state, player, options, "Koume")
+                has_soul_npc(state, player, options, "Koume") and
+                can_afford_price(state, player, options, 10) # technically free, but that's too toxic
             ),
         "Mountain Village Healing Darmani":
             lambda state: (
@@ -2079,8 +2143,14 @@ def get_location_rules(player, options, prices, boss_placements):
                 has_soul_npc(state, player, options, "Tingle") and
                 has_projectiles(state, player) and 
                 (
-                    state.can_reach("Twin Islands", 'Region', player) or 
-                    state.can_reach("Southern Swamp", 'Region', player)
+                    (
+                        state.can_reach("Twin Islands", 'Region', player) and
+                        can_afford_price(state, player, options, 20)
+                    ) or
+                    (
+                        state.can_reach("Southern Swamp", 'Region', player) and
+                        can_afford_price(state, player, options, 40)
+                    )
                 )
             ),
         "Twin Islands Ramp Grotto Chest":
@@ -2502,7 +2572,8 @@ def get_location_rules(player, options, prices, boss_placements):
         "Romani Ranch Doggy Race":
             lambda state: (
                 has_soul_npc(state, player, options, "Doggy Race Lady & Dogs") and
-                state.has("Mask of Truth", player)
+                state.has("Mask of Truth", player) and
+                can_afford_price(state, player, options, 50)
             ),
         "Romani Ranch Romani Game":
             lambda state: (
@@ -2546,10 +2617,16 @@ def get_location_rules(player, options, prices, boss_placements):
         "Tingle Great Bay Map Purchase":
             lambda state: (
                 has_soul_npc(state, player, options, "Tingle") and
-                has_projectiles(state, player) and 
+                has_projectiles(state, player) and
                 (
-                    state.can_reach("Great Bay", 'Region', player) or 
-                    state.can_reach("Milk Road", 'Region', player)
+                    (
+                        state.can_reach("Great Bay", 'Region', player) and
+                        can_afford_price(state, player, options, 20)
+                    ) or
+                    (
+                        state.can_reach("Milk Road", 'Region', player) and
+                        can_afford_price(state, player, options, 40)
+                    )
                 )
             ),
         "Great Bay Fisherman's Grotto Chest":
@@ -2612,7 +2689,8 @@ def get_location_rules(player, options, prices, boss_placements):
         "Great Bay Fisherman Game":
             lambda state: (
                 has_soul_npc(state, player, options, "Fisherman") and
-                can_clear_greatbay(state, player, boss_placements)
+                can_clear_greatbay(state, player, boss_placements) and
+                can_afford_price(state, player, options, 20)
             ),
         "Ocean Spider House Ramp Upper Token":
             lambda state: (
@@ -2833,16 +2911,10 @@ def get_location_rules(player, options, prices, boss_placements):
             lambda state: state.has("Hookshot", player),
         "Pirates' Fortress Leader's Room Chest":
             lambda state: (
+                state.has("Progressive Bow", player) or 
                 (
-                    state.has("Hookshot", player) or 
-                    state.has("Goron Mask", player)
-                ) and 
-                (
-                    state.has("Progressive Bow", player) or 
-                    (
-                        state.has("Deku Mask", player) and 
-                        state.has("Progressive Magic", player)
-                    )
+                    state.has("Deku Mask", player) and 
+                    state.has("Progressive Magic", player)
                 )
             ),
         "Pirates' Fortress Interior Tank Chest":
@@ -2920,6 +2992,7 @@ def get_location_rules(player, options, prices, boss_placements):
         "Zora Hall Deku Scrub Purchase":
             lambda state: (
                 has_soul_npc(state, player, options, "Business Scrubs") and
+                can_afford_price(state, player, options, 40) and
                 state.has("Zora Mask", player)
             ),
         "Zora Hall Goron Scrub Trade":
@@ -3133,6 +3206,7 @@ def get_location_rules(player, options, prices, boss_placements):
         "Graveyard Day 2 Dampe Bats":
             lambda state: (
                 has_soul_npc(state, player, options, "Dampe") and
+                has_soul_enemy(state, player, options, "Bad Bats") and
                 has_projectiles(state, player)
             ),
         "Graveyard Day 2 Iron Knuckle Chest":
@@ -3173,19 +3247,24 @@ def get_location_rules(player, options, prices, boss_placements):
         "Tingle Stone Tower Map Purchase":
             lambda state: (
                 has_soul_npc(state, player, options, "Tingle") and
-                has_projectiles(state, player) and 
+                has_projectiles(state, player) and
                 (
                     (
-                        state.can_reach("Upper Ikana Canyon", 'Region', player) 
-                    ) or 
-                    state.can_reach("Great Bay", 'Region', player)
+                        state.can_reach("Upper Ikana Canyon", 'Region', player) and
+                        can_afford_price(state, player, options, 20)
+                    ) or
+                    (
+                        state.can_reach("Great Bay", 'Region', player) and
+                        can_afford_price(state, player, options, 40)
+                    )
                 )
             ),
         "Ikana Canyon Spirit House":
             lambda state: (
                 has_soul_npc(state, player, options, "Spirit House Owner") and
                 can_use_ice_arrows(state, player) and 
-                state.has("Hookshot", player)
+                state.has("Hookshot", player) and
+                can_afford_price(state, player, options, 30)
             ),
         "Ikana Canyon Healing Pamela's Father":
             lambda state: (
@@ -3276,7 +3355,8 @@ def get_location_rules(player, options, prices, boss_placements):
                 state.has("Gibdo Mask", player) and 
                 has_bottle(state, player) and 
                 (
-                    can_afford_price(state, player, options, 100) or 
+                    can_get_blue_potion(state, player, prices, options) and
+                    can_afford_price(state, player, options, 100) or
                     state.has("Mask of Scents", player) and
                     has_soul_npc(state, player, options, "Kotake")
                 )
@@ -11881,8 +11961,10 @@ def get_location_rules(player, options, prices, boss_placements):
                 state.has("Gibdo Mask", player) and
                 has_bottle(state, player) and
                 (
+                    can_get_blue_potion(state, player, prices, options) and
                     can_afford_price(state, player, options, 100) or
-                    state.has("Mask of Scents", player)
+                    state.has("Mask of Scents", player) and
+                    has_soul_npc(state, player, options, "Kotake")
                 )
             ),
         "Well Left Side Back Room Pots (2)":
@@ -11892,8 +11974,10 @@ def get_location_rules(player, options, prices, boss_placements):
                 state.has("Gibdo Mask", player) and
                 has_bottle(state, player) and
                 (
+                    can_get_blue_potion(state, player, prices, options) and
                     can_afford_price(state, player, options, 100) or
-                    state.has("Mask of Scents", player)
+                    state.has("Mask of Scents", player) and
+                    has_soul_npc(state, player, options, "Kotake")
                 )
             ),
         "Well Left Side Back Room Pots (3)":
@@ -11903,8 +11987,10 @@ def get_location_rules(player, options, prices, boss_placements):
                 state.has("Gibdo Mask", player) and
                 has_bottle(state, player) and
                 (
+                    can_get_blue_potion(state, player, prices, options) and
                     can_afford_price(state, player, options, 100) or
-                    state.has("Mask of Scents", player)
+                    state.has("Mask of Scents", player) and
+                    has_soul_npc(state, player, options, "Kotake")
                 )
             ),
         "Well Left Side Back Room Pots (4)":
@@ -11914,8 +12000,10 @@ def get_location_rules(player, options, prices, boss_placements):
                 state.has("Gibdo Mask", player) and
                 has_bottle(state, player) and
                 (
+                    can_get_blue_potion(state, player, prices, options) and
                     can_afford_price(state, player, options, 100) or
-                    state.has("Mask of Scents", player)
+                    state.has("Mask of Scents", player) and
+                    has_soul_npc(state, player, options, "Kotake")
                 )
             ),
         "Well Left Side Back Room Pots (5)":
@@ -11925,8 +12013,10 @@ def get_location_rules(player, options, prices, boss_placements):
                 state.has("Gibdo Mask", player) and
                 has_bottle(state, player) and
                 (
+                    can_get_blue_potion(state, player, prices, options) and
                     can_afford_price(state, player, options, 100) or
-                    state.has("Mask of Scents", player)
+                    state.has("Mask of Scents", player) and
+                    has_soul_npc(state, player, options, "Kotake")
                 )
             ),
         
@@ -13527,17 +13617,29 @@ def get_location_rules(player, options, prices, boss_placements):
         "Pirates Fortress Interior Indoor Pirate Flag Eye Hitspot (0)":
             lambda state: (
                 state.can_reach("Pirates' Fortress (Interior)", 'Region', player) and
-                has_projectiles(state, player)
+                state.has("Progressive Bow", player) or 
+                (
+                    state.has("Deku Mask", player) and 
+                    state.has("Progressive Magic", player)
+                )
             ),
         "Pirates Fortress Interior Indoor Pirate Flag Eye Hitspot (1)":
             lambda state: (
                 state.can_reach("Pirates' Fortress (Interior)", 'Region', player) and
-                has_projectiles(state, player)
+                state.has("Progressive Bow", player) or 
+                (
+                    state.has("Deku Mask", player) and 
+                    state.has("Progressive Magic", player)
+                )
             ),
         "Pirates Fortress Interior Indoor Pirate Flag Eye Hitspot (2)":
             lambda state: (
                 state.can_reach("Pirates' Fortress (Interior)", 'Region', player) and
-                has_projectiles(state, player)
+                state.has("Progressive Bow", player) or 
+                (
+                    state.has("Deku Mask", player) and 
+                    state.has("Progressive Magic", player)
+                )
             ),
         
         # Ikana Graveyard Hitspots
@@ -14026,134 +14128,152 @@ def get_location_rules(player, options, prices, boss_placements):
             ),
             
 
-        # Deku PlayGround Day 1 Rupees
-        "Deku PlayGround Day 1 Rupees (0)":
+        # Deku Playground Day 1 Rupees
+        "Deku Playground Day 1 Rupees (0)":
             lambda state: (
                 has_soul_absurd(state, player, options, "Grottos") and
                 has_soul_npc(state, player, options, "Deku Playground Employee") and
                 has_soul_absurd(state, player, options, "Deku Flowers") and
+                can_afford_price(state, player, options, 50) and
                 state.has("Deku Mask", player)
             ),
-        "Deku PlayGround Day 1 Rupees (1)":
+        "Deku Playground Day 1 Rupees (1)":
             lambda state: (
                 has_soul_absurd(state, player, options, "Grottos") and
                 has_soul_npc(state, player, options, "Deku Playground Employee") and
                 has_soul_absurd(state, player, options, "Deku Flowers") and
+                can_afford_price(state, player, options, 50) and
                 state.has("Deku Mask", player)
             ),
-        "Deku PlayGround Day 1 Rupees (2)":
+        "Deku Playground Day 1 Rupees (2)":
             lambda state: (
                 has_soul_absurd(state, player, options, "Grottos") and
                 has_soul_npc(state, player, options, "Deku Playground Employee") and
                 has_soul_absurd(state, player, options, "Deku Flowers") and
+                can_afford_price(state, player, options, 50) and
                 state.has("Deku Mask", player)
             ),
-        "Deku PlayGround Day 1 Rupees (3)":
+        "Deku Playground Day 1 Rupees (3)":
             lambda state: (
                 has_soul_absurd(state, player, options, "Grottos") and
                 has_soul_npc(state, player, options, "Deku Playground Employee") and
                 has_soul_absurd(state, player, options, "Deku Flowers") and
+                can_afford_price(state, player, options, 50) and
                 state.has("Deku Mask", player)
             ),
-        "Deku PlayGround Day 1 Rupees (4)":
+        "Deku Playground Day 1 Rupees (4)":
             lambda state: (
                 has_soul_absurd(state, player, options, "Grottos") and
                 has_soul_npc(state, player, options, "Deku Playground Employee") and
                 has_soul_absurd(state, player, options, "Deku Flowers") and
+                can_afford_price(state, player, options, 50) and
                 state.has("Deku Mask", player)
             ),
-        "Deku PlayGround Day 1 Rupees (5)":
+        "Deku Playground Day 1 Rupees (5)":
             lambda state: (
                 has_soul_absurd(state, player, options, "Grottos") and
                 has_soul_npc(state, player, options, "Deku Playground Employee") and
                 has_soul_absurd(state, player, options, "Deku Flowers") and
+                can_afford_price(state, player, options, 50) and
                 state.has("Deku Mask", player)
             ),
 
-        # Deku PlayGround Day 2 Rupees
-        "Deku PlayGround Day 2 Rupees (0)":
+        # Deku Playground Day 2 Rupees
+        "Deku Playground Day 2 Rupees (0)":
             lambda state: (
                 has_soul_absurd(state, player, options, "Grottos") and
                 has_soul_npc(state, player, options, "Deku Playground Employee") and
                 has_soul_absurd(state, player, options, "Deku Flowers") and
+                can_afford_price(state, player, options, 50) and
                 state.has("Deku Mask", player)
             ),
-        "Deku PlayGround Day 2 Rupees (1)":
+        "Deku Playground Day 2 Rupees (1)":
             lambda state: (
                 has_soul_absurd(state, player, options, "Grottos") and
                 has_soul_npc(state, player, options, "Deku Playground Employee") and
                 has_soul_absurd(state, player, options, "Deku Flowers") and
+                can_afford_price(state, player, options, 50) and
                 state.has("Deku Mask", player)
             ),
-        "Deku PlayGround Day 2 Rupees (2)":
+        "Deku Playground Day 2 Rupees (2)":
             lambda state: (
                 has_soul_absurd(state, player, options, "Grottos") and
                 has_soul_npc(state, player, options, "Deku Playground Employee") and
                 has_soul_absurd(state, player, options, "Deku Flowers") and
+                can_afford_price(state, player, options, 50) and
                 state.has("Deku Mask", player)
             ),
-        "Deku PlayGround Day 2 Rupees (3)":
+        "Deku Playground Day 2 Rupees (3)":
             lambda state: (
                 has_soul_absurd(state, player, options, "Grottos") and
                 has_soul_npc(state, player, options, "Deku Playground Employee") and
                 has_soul_absurd(state, player, options, "Deku Flowers") and
+                can_afford_price(state, player, options, 50) and
                 state.has("Deku Mask", player)
             ),
-        "Deku PlayGround Day 2 Rupees (4)":
+        "Deku Playground Day 2 Rupees (4)":
             lambda state: (
                 has_soul_absurd(state, player, options, "Grottos") and
                 has_soul_npc(state, player, options, "Deku Playground Employee") and
                 has_soul_absurd(state, player, options, "Deku Flowers") and
+                can_afford_price(state, player, options, 50) and
                 state.has("Deku Mask", player)
             ),
-        "Deku PlayGround Day 2 Rupees (5)":
+        "Deku Playground Day 2 Rupees (5)":
             lambda state: (
                 has_soul_absurd(state, player, options, "Grottos") and
                 has_soul_npc(state, player, options, "Deku Playground Employee") and
                 has_soul_absurd(state, player, options, "Deku Flowers") and
+                can_afford_price(state, player, options, 50) and
                 state.has("Deku Mask", player)
             ),
-        # Deku PlayGround Day 3 Rupees
-        "Deku PlayGround Day 3 Rupees (0)":
+        # Deku Playground Day 3 Rupees
+        "Deku Playground Day 3 Rupees (0)":
             lambda state: (
                 has_soul_absurd(state, player, options, "Grottos") and
                 has_soul_npc(state, player, options, "Deku Playground Employee") and
                 has_soul_absurd(state, player, options, "Deku Flowers") and
+                can_afford_price(state, player, options, 50) and
                 state.has("Deku Mask", player)
             ),
-        "Deku PlayGround Day 3 Rupees (1)":
+        "Deku Playground Day 3 Rupees (1)":
             lambda state: (
                 has_soul_absurd(state, player, options, "Grottos") and
                 has_soul_npc(state, player, options, "Deku Playground Employee") and
                 has_soul_absurd(state, player, options, "Deku Flowers") and
+                can_afford_price(state, player, options, 50) and
                 state.has("Deku Mask", player)
             ),
-        "Deku PlayGround Day 3 Rupees (2)":
+        "Deku Playground Day 3 Rupees (2)":
             lambda state: (
                 has_soul_absurd(state, player, options, "Grottos") and
                 has_soul_npc(state, player, options, "Deku Playground Employee") and
                 has_soul_absurd(state, player, options, "Deku Flowers") and
+                can_afford_price(state, player, options, 50) and
                 state.has("Deku Mask", player)
             ),
-        "Deku PlayGround Day 3 Rupees (3)":
+        "Deku Playground Day 3 Rupees (3)":
             lambda state: (
                 has_soul_absurd(state, player, options, "Grottos") and
                 has_soul_npc(state, player, options, "Deku Playground Employee") and
                 has_soul_absurd(state, player, options, "Deku Flowers") and
+                can_afford_price(state, player, options, 50) and
                 state.has("Deku Mask", player)
             ),
-        "Deku PlayGround Day 3 Rupees (4)":
+        "Deku Playground Day 3 Rupees (4)":
             lambda state: (
                 has_soul_absurd(state, player, options, "Grottos") and
                 has_soul_npc(state, player, options, "Deku Playground Employee") and
                 has_soul_absurd(state, player, options, "Deku Flowers") and
+                can_afford_price(state, player, options, 50) and
                 state.has("Deku Mask", player)
             ),
-        "Deku PlayGround Day 3 Rupees (5)":
+        "Deku Playground Day 3 Rupees (5)":
             lambda state: (
                 has_soul_absurd(state, player, options, "Grottos") and
                 has_soul_npc(state, player, options, "Deku Playground Employee") and
                 has_soul_absurd(state, player, options, "Deku Flowers") and
+                can_afford_price(state, player, options, 50) and
                 state.has("Deku Mask", player)
             ),
         # Southern Swamp Flower Rupees
@@ -17452,7 +17572,8 @@ def get_location_rules(player, options, prices, boss_placements):
         "Astral Observatory Scarecrow":
             lambda state: (
                 has_soul_npc(state, player, options, "Scarecrow") and
-                state.has("Ocarina of Time", player)
+                state.has("Ocarina of Time", player) and
+                state.can_reach("Bomber's Hideout Astral Observatory", "Location", player)
             ),
         # Mountain Village Scarecrows
         "Mountain Village Rooftop Scarecrow":
@@ -17531,7 +17652,11 @@ def get_location_rules(player, options, prices, boss_placements):
         "Road to Ikana Scarecrow":
             lambda state: (
                 has_soul_npc(state, player, options, "Scarecrow") and
-                state.has("Ocarina of Time", player)
+                state.has("Ocarina of Time", player) and
+                (
+                    can_play_song("Epona's Song", state, player) or
+                    can_use_owl(state, player, options, "Ikana Canyon")
+                )
             ),
         # Stone Tower Scarecrows
         "Stone Tower Lower Scarecrow":
@@ -19305,48 +19430,104 @@ def get_location_rules(player, options, prices, boss_placements):
             lambda state: (
                 has_soul_absurd(state, player, options, "Grottos") and
                 has_soul_absurd(state, player, options, "Deku Flowers") and
+                (
+                    not options.child_wallet.value or
+                    (
+                        has_soul_npc(state, player, options, "Deku Playground Employee") and
+                        can_afford_price(state, player, options, 50)
+                    )
+                ) and
                 state.has("Deku Mask", player)
             ),
         "North Clock Town Deku Playground Flower (2)":
             lambda state: (
                 has_soul_absurd(state, player, options, "Grottos") and
                 has_soul_absurd(state, player, options, "Deku Flowers") and
+                (
+                    not options.child_wallet.value or
+                    (
+                        has_soul_npc(state, player, options, "Deku Playground Employee") and
+                        can_afford_price(state, player, options, 50)
+                    )
+                ) and
                 state.has("Deku Mask", player)
             ),
         "North Clock Town Deku Playground Flower (3)":
             lambda state: (
                 has_soul_absurd(state, player, options, "Grottos") and
                 has_soul_absurd(state, player, options, "Deku Flowers") and
+                (
+                    not options.child_wallet.value or
+                    (
+                        has_soul_npc(state, player, options, "Deku Playground Employee") and
+                        can_afford_price(state, player, options, 50)
+                    )
+                ) and
                 state.has("Deku Mask", player)
             ),
         "North Clock Town Deku Playground Flower (4)":
             lambda state: (
                 has_soul_absurd(state, player, options, "Grottos") and
                 has_soul_absurd(state, player, options, "Deku Flowers") and
+                (
+                    not options.child_wallet.value or
+                    (
+                        has_soul_npc(state, player, options, "Deku Playground Employee") and
+                        can_afford_price(state, player, options, 50)
+                    )
+                ) and
                 state.has("Deku Mask", player)
             ),
         "North Clock Town Deku Playground Flower (5)":
             lambda state: (
                 has_soul_absurd(state, player, options, "Grottos") and
                 has_soul_absurd(state, player, options, "Deku Flowers") and
+                (
+                    not options.child_wallet.value or
+                    (
+                        has_soul_npc(state, player, options, "Deku Playground Employee") and
+                        can_afford_price(state, player, options, 50)
+                    )
+                ) and
                 state.has("Deku Mask", player)
             ),
         "North Clock Town Deku Playground Flower (6)":
             lambda state: (
                 has_soul_absurd(state, player, options, "Grottos") and
                 has_soul_absurd(state, player, options, "Deku Flowers") and
+                (
+                    not options.child_wallet.value or
+                    (
+                        has_soul_npc(state, player, options, "Deku Playground Employee") and
+                        can_afford_price(state, player, options, 50)
+                    )
+                ) and
                 state.has("Deku Mask", player)
             ),
         "North Clock Town Deku Playground Flower (7)":
             lambda state: (
                 has_soul_absurd(state, player, options, "Grottos") and
                 has_soul_absurd(state, player, options, "Deku Flowers") and
+                (
+                    not options.child_wallet.value or
+                    (
+                        has_soul_npc(state, player, options, "Deku Playground Employee") and
+                        can_afford_price(state, player, options, 50)
+                    )
+                ) and
                 state.has("Deku Mask", player)
             ),
         "North Clock Town Deku Playground Flower (8)":
             lambda state: (
                 has_soul_absurd(state, player, options, "Grottos") and
                 has_soul_absurd(state, player, options, "Deku Flowers") and
+                (
+                    not options.child_wallet.value or
+                    (
+                        has_soul_npc(state, player, options, "Deku Playground Employee") and
+                        can_afford_price(state, player, options, 50)
+                    )
+                ) and
                 state.has("Deku Mask", player)
             ),
         "Termina Field Flower Near Observatory":

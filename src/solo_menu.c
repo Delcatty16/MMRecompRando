@@ -176,7 +176,7 @@ void createSoloList() {
         u32 last_entry_index = solo_menu.entry_list_size - 1;
         recompui_set_nav(solo_menu.new_seed_button, NAVDIRECTION_UP, solo_menu.entry_list[last_entry_index].entry_button);
         recompui_set_nav(solo_menu.entry_list[last_entry_index].entry_button, NAVDIRECTION_DOWN, solo_menu.new_seed_button);
-        recompui_set_display(solo_menu.start_button, DISPLAY_BLOCK);
+        recompui_set_display(solo_menu.start_button, DISPLAY_FLEX);
 
         selectEntry(0);
     }
@@ -223,8 +223,8 @@ static void startPressed(RecompuiResource resource, const RecompuiEventData* dat
         else {
             recomp_printf("Failed to start solo\n");
             recompui_close_context(solo_menu.context);
-            randoEmitErrorNotification("Failed to load seed, file may be corrupted");
-            randoEmitErrorNotification(error_msg); // show error message in more detail
+            randoCreateErrorNotification("Failed to load seed, file may be corrupted");
+            randoCreateErrorNotification(error_msg); // show error message in more detail
             recompui_open_context(solo_menu.context);
         }
         recomp_free(error_msg);
@@ -361,7 +361,8 @@ void randoCreateSoloMenu() {
     recompui_set_width(solo_menu.new_seed_button, 300.0f, UNIT_DP);
     recompui_register_callback(solo_menu.new_seed_button, newSeedPressed, NULL);
 
-    solo_menu.import_button = recompui_create_button(solo_menu.context, solo_menu.footer, "Import Yaml", BUTTONSTYLE_SECONDARY);
+    // Create the YAML import button
+    solo_menu.import_button = recompui_create_button(solo_menu.context, solo_menu.footer, "Import YAML", BUTTONSTYLE_SECONDARY);
     recompui_set_width(solo_menu.import_button, 300.0f, UNIT_DP);
     recompui_set_margin_left(solo_menu.import_button, 12.0f, UNIT_DP);
     recompui_register_callback(solo_menu.import_button, importPressed, NULL);

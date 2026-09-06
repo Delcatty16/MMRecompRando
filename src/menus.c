@@ -45,6 +45,7 @@ void createUiFrame(RecompuiContext context, UiFrame* frame) {
     recompui_set_background_color(frame->root, &bg_color);
 
     // Set up the flexbox properties of the root element.
+    recompui_set_display(frame->root, DISPLAY_FLEX);
     recompui_set_flex_direction(frame->root, FLEX_DIRECTION_COLUMN);
     recompui_set_justify_content(frame->root, JUSTIFY_CONTENT_CENTER);
     recompui_set_align_items(frame->root, ALIGN_ITEMS_CENTER);
@@ -110,7 +111,9 @@ void RandoMenu_Main(GameState* thisx) {
         }
         recomp_change_save_file(file_name);
 
-        colors_set_human_tunic(C_TO_PARAMS(rando_get_slotdata_u32("link_tunic_color")));
+        if (recomp_is_dependency_met("mm_recomp_colors") == DEPENDENCY_STATUS_FOUND) {
+            colors_set_human_tunic(C_TO_PARAMS(rando_get_slotdata_u32("link_tunic_color")));
+        }
         Setup_InitImpl(this);
     }
 

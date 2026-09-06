@@ -6,13 +6,16 @@ from Options import Choice, Option, DefaultOnToggle, Toggle, Range, OptionList, 
 
 
 class LogicDifficulty(Choice):
-    """Set the logic difficulty used when generating."""
+    """Set the logic difficulty used when generating.
+    
+    For "Nearly No Logic" it is recommended to set "Accessibility" to "Minimal" and "Progression Balancing" to "Disabled"/0."""
     display_name = "Logic Difficulty"
     # ~ option_easy = 0
     option_normal = 1
     #option_obscure_glitchless = 2
     #option_glitched = 3
     option_no_logic = 4
+    option_nearly_no_logic = 5
     # ~ alias_baby = option_easy
     default = 1
 
@@ -419,7 +422,7 @@ class Iciclesanity(Toggle):
 
 class Scarecrowsanity(Toggle):
     """Choose whether the scarecrow rewards an item when he is spawned."""
-    display_name = "Scarecrowanity"  
+    display_name = "Scarecrowsanity"
 
 
 class Hivesanity(Toggle):

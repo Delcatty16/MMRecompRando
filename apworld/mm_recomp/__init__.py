@@ -11,6 +11,7 @@ from .Options import MMROptions, mm_option_groups
 from .Regions import region_data_table, get_exit
 from .Rules import *
 from .NormalRules import *
+from .NearlyRules import *
 from .Constants import *
 
 import copy
@@ -517,6 +518,9 @@ class MMRWorld(World):
         if (self.options.logic_difficulty.value == 1):
             region_rules = get_region_rules(player, options)
             location_rules = get_location_rules(player, options, prices, boss_regions)
+        elif (self.options.logic_difficulty.value == 5):
+            region_rules = get_nearly_region_rules(player, options)
+            location_rules = get_nearly_location_rules(player, options, prices, boss_regions)
 
         for entrance_name, rule in region_rules.items():
             entrance = mw.get_entrance(entrance_name, player)
