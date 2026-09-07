@@ -1073,7 +1073,7 @@ void skullTokenMsg(EZTR_MsgBuffer* buf, u8 type, u8 count, u8 required) {
 
     EZTR_MsgSContent_Sprintf(
         buf->data.content,
-        "You got a %m Skulltula Token" EZTR_CC_COLOR_DEFAULT "!" EZTR_CC_NEWLINE
+        "You got a %m Skulltula Spirit" EZTR_CC_COLOR_DEFAULT "!" EZTR_CC_NEWLINE
         "This is your " EZTR_CC_COLOR_RED "%m" EZTR_CC_COLOR_DEFAULT " one." EZTR_CC_NEWLINE
         "%m" EZTR_CC_END,
         type_str,
@@ -1531,14 +1531,14 @@ EZTR_MSG_CALLBACK(randoGrave1Hint) {
         EZTR_MsgSContent_Snprintf(
             formatted_item_name,
             128,
-            "%s" EZTR_CC_END,
+            "%s" EZTR_CC_COLOR_DEFAULT "." EZTR_CC_END,
             item_name
         );        
     } else {
         EZTR_MsgSContent_Snprintf(
             formatted_item_name,
             128,
-            EZTR_CC_COLOR_SILVER "nothing" EZTR_CC_END
+            EZTR_CC_COLOR_SILVER "nothing" EZTR_CC_COLOR_DEFAULT "." EZTR_CC_END
         );
     }
     
@@ -1563,14 +1563,14 @@ EZTR_MSG_CALLBACK(randoGrave1Hint) {
         EZTR_MsgSContent_Snprintf(
             formatted_item_name2,
             128,
-            "%s" EZTR_CC_END,
+            "%s" EZTR_CC_COLOR_DEFAULT "." EZTR_CC_END,
             item_name2
         );        
     } else {
         EZTR_MsgSContent_Snprintf(
             formatted_item_name2,
             128,
-            EZTR_CC_COLOR_SILVER "nothing" EZTR_CC_END
+            EZTR_CC_COLOR_SILVER "nothing" EZTR_CC_COLOR_DEFAULT "." EZTR_CC_END
         );
     }
 
@@ -1596,7 +1596,7 @@ EZTR_MSG_CALLBACK(randoGrave1Hint) {
         "summons the tears of" EZTR_CC_NEWLINE
         "%c%m%m" EZTR_CC_NEWLINE
         EZTR_CC_BOX_BREAK2
-        "Those who defeat the" EZTR_CC_NEWLINE
+        EZTR_CC_COLOR_DEFAULT "Those who defeat the" EZTR_CC_NEWLINE
         "evil will find" EZTR_CC_NEWLINE
         "%c%m%m" EZTR_CC_END,
         getAPLocationItemColor(location1),
@@ -1628,14 +1628,14 @@ EZTR_MSG_CALLBACK(randoGrave2Hint) {
         EZTR_MsgSContent_Snprintf(
             formatted_item_name,
             128,
-            "%s" EZTR_CC_END,
+            "%s" EZTR_CC_COLOR_DEFAULT "." EZTR_CC_END,
             item_name
         );        
     } else {
         EZTR_MsgSContent_Snprintf(
             formatted_item_name,
             128,
-            EZTR_CC_COLOR_SILVER "nothing" EZTR_CC_END
+            EZTR_CC_COLOR_SILVER "nothing" EZTR_CC_COLOR_DEFAULT "." EZTR_CC_END
         );
     }
 
@@ -1684,14 +1684,14 @@ EZTR_MSG_CALLBACK(randoGrave3Hint) {
         EZTR_MsgSContent_Snprintf(
             formatted_item_name,
             128,
-            "%s" EZTR_CC_END,
+            "%s" EZTR_CC_COLOR_DEFAULT "." EZTR_CC_END,
             item_name
         );        
     } else {
         EZTR_MsgSContent_Snprintf(
             formatted_item_name,
             128,
-            EZTR_CC_COLOR_SILVER "nothing" EZTR_CC_END
+            EZTR_CC_COLOR_SILVER "nothing" EZTR_CC_COLOR_DEFAULT "." EZTR_CC_END
         );
     }
 
@@ -2170,7 +2170,7 @@ EZTR_MSG_CALLBACK(randoGossips) {
                         EZTR_CC_COLOR_DEFAULT "are the real " EZTR_CC_COLOR_DEFAULT "Zelda players!" EZTR_CC_END;
                 break;
             case 13: // IT'S PIKACHU!
-                text = "IT'S" EZTR_CC_COLOR_YELLOW "PIKACHU" EZTR_CC_COLOR_DEFAULT "!" EZTR_CC_END;
+                text = "IT'S " EZTR_CC_COLOR_YELLOW "PIKACHU" EZTR_CC_COLOR_DEFAULT "!" EZTR_CC_END;
                 break;
             case 14: // Every hour...
                 text = "Every sixty seconds in " EZTR_CC_COLOR_RED "Termina" EZTR_CC_COLOR_DEFAULT "," EZTR_CC_NEWLINE
@@ -2182,7 +2182,7 @@ EZTR_MSG_CALLBACK(randoGossips) {
                 break;
             case 16: // Lottery Shop Sign
                 text = "The sign outside the " EZTR_CC_COLOR_RED "Lottery Shop" EZTR_CC_NEWLINE
-                        "tells you what the prize is!" EZTR_CC_END;
+                        EZTR_CC_COLOR_DEFAULT "tells you what the" EZTR_CC_COLOR_RED "prize" EZTR_CC_COLOR_DEFAULT " is!" EZTR_CC_END;
                 break;
             case 17: // Player reportedly forgot unchecked location
                 REPY_FN_EXEC_CACHE(
@@ -3668,7 +3668,7 @@ EZTR_ON_INIT void init_text() {
         EZTR_NO_VALUE,
         EZTR_NO_VALUE,
         false,
-        "You learned the " EZTR_CC_COLOR_LIGHTBLUE "Song of Time" EZTR_CC_COLOR_DEFAULT "!" EZTR_CC_END,
+        "You remembered the " EZTR_CC_COLOR_LIGHTBLUE "Song of Time" EZTR_CC_COLOR_DEFAULT "!" EZTR_CC_END,
         NULL
     );
 
@@ -3694,7 +3694,7 @@ EZTR_ON_INIT void init_text() {
         EZTR_NO_VALUE,
         EZTR_NO_VALUE,
         false,
-        "You learned " EZTR_CC_COLOR_ORANGE "Epona's Song" EZTR_CC_COLOR_DEFAULT "!" EZTR_CC_END,
+        "You remembered " EZTR_CC_COLOR_ORANGE "Epona's Song" EZTR_CC_COLOR_DEFAULT "!" EZTR_CC_END,
         NULL
     );
 
@@ -3720,7 +3720,7 @@ EZTR_ON_INIT void init_text() {
         EZTR_NO_VALUE,
         EZTR_NO_VALUE,
         false,
-        "You learned the " EZTR_CC_COLOR_SILVER "Song of Storms" EZTR_CC_COLOR_DEFAULT "!" EZTR_CC_END,
+        "You remembered the " EZTR_CC_COLOR_SILVER "Song of Storms" EZTR_CC_COLOR_DEFAULT "!" EZTR_CC_END,
         NULL
     );
 
