@@ -1958,6 +1958,110 @@ EZTR_MSG_CALLBACK(randoBombShopGoronHasSell) {
     );
     randomizedKegGoronItem = false;
 }
+EZTR_MSG_CALLBACK(randoBeaverHints) {
+    u32 location1 = 0x09018D; // Beaver Race 1 
+    char* item_name;
+    char* player_name;
+    u32 location2 = 0x07018D; // Beaver Race 2
+    char* item_name2;
+    char* player_name2;
+
+    rando_get_location_item_name(location1, &item_name);
+    rando_get_location_item_player(location1, &player_name);
+    rando_get_location_item_name(location2, &item_name2);
+    rando_get_location_item_player(location2, &player_name2);
+    sanitizeRandoText(item_name);
+    sanitizeRandoText(player_name);
+    sanitizeRandoText(item_name2);
+    sanitizeRandoText(player_name2);
+
+    char formatted_item_name[128];
+    if (!rando_location_is_checked(location1)) {
+        EZTR_MsgSContent_Snprintf(
+            formatted_item_name,
+            128,
+            "%s" EZTR_CC_COLOR_DEFAULT "." EZTR_CC_END,
+            item_name
+        );        
+    } else {
+        EZTR_MsgSContent_Snprintf(
+            formatted_item_name,
+            128,
+            EZTR_CC_COLOR_SILVER "nothing" EZTR_CC_COLOR_DEFAULT "." EZTR_CC_END
+        );
+    }
+    
+    char formatted_player_name[128];
+    if (!rando_get_location_has_local_item(location1) && !rando_location_is_checked(location1)) {
+        EZTR_MsgSContent_Snprintf(
+            formatted_player_name,
+            128,
+            EZTR_CC_NEWLINE EZTR_CC_COLOR_DEFAULT "(" EZTR_CC_COLOR_GREEN "%s" EZTR_CC_COLOR_DEFAULT ")" EZTR_CC_END,
+            player_name
+        );
+    } else {
+        EZTR_MsgSContent_Snprintf(
+            formatted_player_name,
+            128,
+            EZTR_CC_END
+        );
+    }
+
+    char formatted_item_name2[128];
+    if (!rando_location_is_checked(location2)) {
+        EZTR_MsgSContent_Snprintf(
+            formatted_item_name2,
+            128,
+            "%s" EZTR_CC_COLOR_DEFAULT "." EZTR_CC_END,
+            item_name2
+        );        
+    } else {
+        EZTR_MsgSContent_Snprintf(
+            formatted_item_name2,
+            128,
+            EZTR_CC_COLOR_SILVER "nothing" EZTR_CC_COLOR_DEFAULT "." EZTR_CC_END
+        );
+    }
+
+    char formatted_player_name2[128];
+    if (!rando_get_location_has_local_item(location2) && !rando_location_is_checked(location2)) {
+        EZTR_MsgSContent_Snprintf(
+            formatted_player_name2,
+            128,
+            EZTR_CC_NEWLINE EZTR_CC_COLOR_DEFAULT "(" EZTR_CC_COLOR_GREEN "%s" EZTR_CC_COLOR_DEFAULT ")" EZTR_CC_END,
+            player_name2
+        );
+    } else {
+        EZTR_MsgSContent_Snprintf(
+            formatted_player_name2,
+            128,
+            EZTR_CC_END
+        );
+    }
+
+    EZTR_MsgSContent_Sprintf(
+        buf->data.content,
+        "I saw a couple of beavers running" EZTR_CC_NEWLINE
+        "up towards that cliff over there." EZTR_CC_NEWLINE 
+        "They had some items with them." EZTR_CC_NEWLINE EZTR_CC_BOX_BREAK2
+        "The first one had" EZTR_CC_NEWLINE
+        "%c%m%m" EZTR_CC_NEWLINE
+        EZTR_CC_BOX_BREAK2
+        EZTR_CC_COLOR_DEFAULT "And the second one had" EZTR_CC_NEWLINE
+        "%c%m%m" EZTR_CC_EVENT2 EZTR_CC_END,
+        getAPLocationItemColor(location1),
+        formatted_item_name,
+        formatted_player_name,
+        getAPLocationItemColor(location2),
+        formatted_item_name2,
+        formatted_player_name2
+    );
+    
+    recomp_free(item_name);
+    recomp_free(player_name);
+    recomp_free(item_name2);
+    recomp_free(player_name2);
+}
 
 #include "hints.h"
 
@@ -3106,6 +3210,56 @@ EZTR_ON_INIT void init_text() {
         "\xBF",
         randoTerminaScrubPurchaseHint
     );
+// Zora to the left of the pot game hinting at beavers
+    EZTR_Basic_ReplaceText(
+        0x125F, // Zora talking about the beavers while in zora form. 1st time talking.
+        EZTR_STANDARD_TEXT_BOX_I,
+        0,
+        EZTR_ICON_NO_ICON,
+        EZTR_NO_VALUE,
+        EZTR_NO_VALUE,
+        EZTR_NO_VALUE,
+        true,
+        "\xBF",
+        randoBeaverHints
+    );
+    EZTR_Basic_ReplaceText(
+        0x1261, // Zora talking about the beavers while in zora form. 2nd time talking.
+        EZTR_STANDARD_TEXT_BOX_I,
+        0,
+        EZTR_ICON_NO_ICON,
+        EZTR_NO_VALUE,
+        EZTR_NO_VALUE,
+        EZTR_NO_VALUE,
+        true,
+        "\xBF",
+        randoBeaverHints
+    );
+    EZTR_Basic_ReplaceText(
+        0x125D, // Zora to the left of the pot game talking to non-zora 1st time talking.
+        EZTR_STANDARD_TEXT_BOX_I,
+        0,
+        EZTR_ICON_NO_ICON,
+        EZTR_NO_VALUE,
+        EZTR_NO_VALUE,
+        EZTR_NO_VALUE,
+        true,
+        "\xBF",
+        randoBeaverHints
+    );
+    EZTR_Basic_ReplaceText(
+        0x125E, // Zora to the left of the pot game talking to non-zora 2nd time talking.
+        EZTR_STANDARD_TEXT_BOX_I,
+        0,
+        EZTR_ICON_NO_ICON,
+        EZTR_NO_VALUE,
+        EZTR_NO_VALUE,
+        EZTR_NO_VALUE,
+        true,
+        "\xBF",
+        randoBeaverHints
+    );
+
     
     
     // Gossip Stones
