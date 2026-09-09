@@ -899,6 +899,117 @@ EZTR_MSG_CALLBACK(randoMilkBar) {
     recomp_free(player_name2);
 }
 
+EZTR_MSG_CALLBACK(randoPictographContest1) {
+    u32 pictographGoodPicture = 0x071C54; // 20 rupee Pictograph prize
+    char* player_name;
+    char* item_name;
+
+    rando_get_location_item_player(pictographGoodPicture, &player_name);
+    rando_get_location_item_name(pictographGoodPicture, &item_name);
+    sanitizeRandoText(item_name);
+    sanitizeRandoText(player_name);
+
+    char formatted_player_name1[128];
+    if (!rando_get_location_has_local_item(pictographGoodPicture) && (!rando_location_is_checked(pictographGoodPicture))) {
+        EZTR_MsgSContent_Snprintf(
+            formatted_player_name1,
+            128,
+            " (" EZTR_CC_COLOR_LIGHTBLUE "%s" EZTR_CC_COLOR_DEFAULT ")" EZTR_CC_END,
+            player_name
+        );
+    } else {
+        EZTR_MsgSContent_Snprintf(
+            formatted_player_name1,
+            128,
+            EZTR_CC_END
+        );
+    }
+
+    char formatted_item_name1[128];
+    if (!rando_location_is_checked(pictographGoodPicture)) {
+        EZTR_MsgSContent_Snprintf(
+            formatted_item_name1,
+            128,
+            "%s" EZTR_CC_END,
+            item_name
+        );        
+    } else {
+        EZTR_MsgSContent_Snprintf(
+            formatted_item_name1,
+            128,
+            EZTR_CC_COLOR_GREEN "20 Rupees" EZTR_CC_END
+        );
+    }
+
+    EZTR_MsgSContent_Sprintf(
+        buf->data.content,
+        "Now then, please choose your" EZTR_CC_NEWLINE 
+        "prize:" EZTR_CC_NEWLINE 
+        EZTR_CC_TWO_CHOICE EZTR_CC_COLOR_GREEN "%m" EZTR_CC_COLOR_DEFAULT "%m" EZTR_CC_NEWLINE
+        EZTR_CC_COLOR_GREEN "Another boat cruise" EZTR_CC_END,
+        formatted_item_name1,
+        formatted_player_name1
+    );
+    
+    recomp_free(item_name);
+    recomp_free(player_name);
+}
+EZTR_MSG_CALLBACK(randoPictographContest2) {
+    u32 pictographOkayPicture = 0x071C52; // 5 rupee Pictograph prize
+    char* player_name;
+    char* item_name;
+
+    rando_get_location_item_player(pictographOkayPicture, &player_name);
+    rando_get_location_item_name(pictographOkayPicture, &item_name);
+    sanitizeRandoText(item_name);
+    sanitizeRandoText(player_name);
+
+    char formatted_player_name1[128];
+    if (!rando_get_location_has_local_item(pictographOkayPicture) && (!rando_location_is_checked(pictographOkayPicture))) {
+        EZTR_MsgSContent_Snprintf(
+            formatted_player_name1,
+            128,
+            " (" EZTR_CC_COLOR_LIGHTBLUE "%s" EZTR_CC_COLOR_DEFAULT ")" EZTR_CC_END,
+            player_name
+        );
+    } else {
+        EZTR_MsgSContent_Snprintf(
+            formatted_player_name1,
+            128,
+            EZTR_CC_END
+        );
+    }
+
+    char formatted_item_name1[128];
+    if (!rando_location_is_checked(pictographOkayPicture)) {
+        EZTR_MsgSContent_Snprintf(
+            formatted_item_name1,
+            128,
+            "%s" EZTR_CC_END,
+            item_name
+        );        
+    } else {
+        EZTR_MsgSContent_Snprintf(
+            formatted_item_name1,
+            128,
+            EZTR_CC_COLOR_GREEN "5 Rupees" EZTR_CC_END
+        );
+    }
+
+    EZTR_MsgSContent_Sprintf(
+        buf->data.content,
+        "All right...Choose your prize..." EZTR_CC_NEWLINE 
+        " " EZTR_CC_NEWLINE 
+        EZTR_CC_TWO_CHOICE EZTR_CC_COLOR_GREEN "%m" EZTR_CC_COLOR_DEFAULT "%m" EZTR_CC_NEWLINE
+        EZTR_CC_COLOR_GREEN "Another boat cruise" EZTR_CC_END,
+        formatted_item_name1,
+        formatted_player_name1
+    );
+    
+    recomp_free(item_name);
+    recomp_free(player_name);
+}
+
 u16 savedDungeonIndex;
 bool changedDungeonIndex;
 
@@ -3258,6 +3369,30 @@ EZTR_ON_INIT void init_text() {
         true,
         "\xBF",
         randoBeaverHints
+    );
+    EZTR_Basic_ReplaceText(
+        0x09CD, // Pictograph contest 20 rupee prize
+        EZTR_STANDARD_TEXT_BOX_I,
+        0,
+        EZTR_ICON_NO_ICON,
+        EZTR_NO_VALUE,
+        EZTR_NO_VALUE,
+        EZTR_NO_VALUE,
+        true,
+        "\xBF",
+        randoPictographContest1
+    );
+    EZTR_Basic_ReplaceText(
+        0x09D5, // Pictograph contest 5 rupee prize
+        EZTR_STANDARD_TEXT_BOX_I,
+        0,
+        EZTR_ICON_NO_ICON,
+        EZTR_NO_VALUE,
+        5,
+        EZTR_NO_VALUE,
+        true,
+        "\xBF",
+        randoPictographContest2
     );
 
     
